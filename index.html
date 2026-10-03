@@ -1,639 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sri Maheshwari Vegetables - E-Bill</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sri Maheshwari Vegetables - E-Bill</title>
 
-<style>
-* {
-    box-sizing: border-box;
-}
+    <style>
+        * {
+            box-sizing: border-box
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    margin: 0;
-    padding: 20px;
-    color: #111;
-}
+        :root {
+            font-family: Arial, Helvetica, sans-serif
+        }
 
-.container {
-    max-width: 950px;
-    margin: auto;
-}
+        body {
+            margin: 0;
+            background: #f3f4f6;
+            color: #111;
+            padding: clamp(8px, 2vw, 24px)
+        }
 
-.controls {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
+        .app {
+            width: min(1200px, 100%);
+            margin: auto
+        }
 
-.controls h2 {
-    text-align: center;
-    margin-top: 0;
-}
+        .controls,
+        .bill {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 14px
+        }
 
-.top-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-}
+        .controls {
+            padding: clamp(14px, 2.5vw, 24px);
+            margin-bottom: 16px
+        }
 
-label {
-    font-weight: bold;
-    font-size: 14px;
-}
+        .title {
+            text-align: center;
+            margin: 0 0 18px;
+            font-size: clamp(21px, 3vw, 30px)
+        }
 
-input,
-select {
-    width: 100%;
-    padding: 9px;
-    margin-top: 5px;
-    border: 1px solid #aaa;
-    border-radius: 5px;
-    font-size: 14px;
-}
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px
+        }
 
-button {
-    padding: 10px 16px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
+        label {
+            font-size: 13px;
+            font-weight: 700
+        }
 
-.add {
-    background: #222;
-    color: white;
-}
+        input,
+        select {
+            width: 100%;
+            height: 42px;
+            margin-top: 5px;
+            padding: 9px 10px;
+            border: 1px solid #bbb;
+            border-radius: 7px;
+            font-size: 16px;
+            background: #fff
+        }
 
-.print {
-    background: #1769aa;
-    color: white;
-    margin-left: 8px;
-}
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px
+        }
 
-.clear {
-    background: #ddd;
-    margin-left: 8px;
-}
+        button {
+            min-height: 44px;
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer
+        }
 
-.bill {
-    background: white;
-    padding: 25px;
-    border: 1px solid #222;
-}
+        .add {
+            background: #222;
+            color: #fff
+        }
 
-.shop {
-    text-align: center;
-    border-bottom: 1px solid #222;
-    padding-bottom: 10px;
-}
+        .clear {
+            background: #e5e5e5
+        }
 
-.shop h1 {
-    margin: 0;
-    font-size: 25px;
-}
+        .print {
+            background: #1769aa;
+            color: #fff
+        }
 
-.shop p {
-    margin: 4px;
-    font-weight: bold;
-}
+        .bill {
+            padding: clamp(12px, 3vw, 28px);
+            border-radius: 4px
+        }
 
-.meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin: 12px 0;
-}
+        .shop {
+            text-align: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px
+        }
 
-.meta div:last-child {
-    text-align: right;
-}
+        .shop h1 {
+            margin: 0 0 5px;
+            font-size: clamp(20px, 3vw, 28px)
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        .shop p {
+            margin: 3px;
+            font-weight: 700;
+            font-size: clamp(12px, 1.8vw, 15px)
+        }
 
-th,
-td {
-    border: 1px solid #222;
-    padding: 6px;
-    text-align: center;
-    font-size: 13px;
-}
+        .meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin: 12px 0;
+            font-size: 14px
+        }
 
-th {
-    font-weight: bold;
-}
+        .meta .right {
+            text-align: right
+        }
 
-.item {
-    text-align: left;
-}
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto
+        }
 
-.qty {
-    width: 75px;
-}
+        table {
+            width: 100%;
+            min-width: 680px;
+            border-collapse: collapse
+        }
 
-.unit {
-    width: 70px;
-}
+        th,
+        td {
+            border: 1px solid #222;
+            padding: 5px;
+            text-align: center;
+            font-size: 13px
+        }
 
-.rate {
-    width: 90px;
-}
+        th {
+            font-weight: 700
+        }
 
-.amount {
-    width: 110px;
-    font-weight: bold;
-}
+        .item {
+            text-align: left
+        }
 
-.summary td {
-    font-weight: bold;
-    height: 32px;
-}
+        .item input {
+            height: 32px;
+            margin: 0;
+            padding: 4px 6px;
+            border: 0;
+            border-radius: 0;
+            font-size: 13px
+        }
 
-@media(max-width: 650px) {
+        .qty {
+            width: 78px !important
+        }
 
-    body {
-        padding: 8px;
-    }
+        .unit {
+            width: 72px !important;
+            height: 32px !important;
+            margin: 0 !important;
+            padding: 3px !important;
+            font-size: 13px !important
+        }
 
-    .top-fields {
-        grid-template-columns: 1fr;
-    }
+        .rate {
+            width: 90px !important;
+            height: 32px !important;
+            margin: 0 !important;
+            padding: 4px 6px !important;
+            font-size: 13px !important
+        }
 
-    .bill {
-        padding: 10px;
-    }
+        .amount {
+            width: 100px;
+            font-weight: 700
+        }
 
-    .shop h1 {
-        font-size: 19px;
-    }
+        .summary td {
+            font-weight: 700;
+            height: 32px
+        }
 
-    th,
-    td {
-        padding: 4px;
-        font-size: 10px;
-    }
+        @media(max-width:700px) {
+            .fields {
+                grid-template-columns: 1fr
+            }
 
-    .qty,
-    .unit,
-    .rate,
-    .amount {
-        width: auto;
-    }
-}
+            .actions button {
+                flex: 1 1 30%;
+                min-width: 110px
+            }
 
-@media print {
+            .meta {
+                font-size: 12px
+            }
 
-    body {
-        background: white;
-        padding: 0;
-    }
+            .bill {
+                padding: 10px
+            }
+        }
 
-    .controls {
-        display: none;
-    }
+        @media(min-width:701px) and (max-width:1000px) {
+            .fields {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+        }
 
-    .container {
-        max-width: none;
-    }
+        @media print {
+            body {
+                background: #fff;
+                padding: 0
+            }
 
-    .bill {
-        border: none;
-        padding: 8mm;
-    }
+            .controls {
+                display: none
+            }
 
-    @page {
-        size: A4 portrait;
-        margin: 8mm;
-    }
-}
-</style>
+            .app {
+                width: 100%
+            }
+
+            .bill {
+                border: 0;
+                padding: 6mm
+            }
+
+            .table-wrap {
+                overflow: visible
+            }
+
+            table {
+                min-width: 0
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 7mm
+            }
+        }
+    </style>
 </head>
 
 <body>
-
-<div class="container">
-
-<!-- BILL CONTROLS -->
-
-<div class="controls">
-
-<h2>Create E-Bill</h2>
-
-<div class="top-fields">
-
-<label>
-Bill No.
-<input id="billNo" type="text" placeholder="Example: 1025">
-</label>
-
-<label>
-Date
-<input id="billDate" type="date">
-</label>
-
-<label>
-Customer Name / Mobile
-<input id="customer" type="text" placeholder="Optional">
-</label>
-
-</div>
-
-<button class="add" onclick="addRow()">
-+ Add Item
-</button>
-
-<button class="clear" onclick="clearItems()">
-Clear Items
-</button>
-
-<button class="print" onclick="window.print()">
-Print / Save PDF
-</button>
-
-</div>
-
-
-<!-- BILL -->
-
-<div class="bill">
-
-<div class="shop">
-
-<h1>SRI MAHESHWARI VEGETABLES</h1>
-
-<p>
-Bowenpally Market, Secunderabad - 500 009. T.G
-</p>
-
-<p>
-SAI KUMAR : 9666481283
-</p>
-
-</div>
-
-
-<div class="meta">
-
-<div>
-No. :
-<strong id="showBillNo">____________</strong>
-</div>
-
-<div>
-Date :
-<strong id="showDate">____________</strong>
-</div>
-
-</div>
-
-
-<table id="items">
-
-<thead>
-
-<tr>
-
-<th>S. No.</th>
-
-<th>PARTICULARS</th>
-
-<th>Qty.</th>
-
-<th>Unit</th>
-
-<th>Rate<br>₹ / kg</th>
-
-<th>Amount<br>₹</th>
-
-</tr>
-
-</thead>
-
-
-<tbody></tbody>
-
-
-<tfoot>
-
-<tr class="summary">
-
-<td colspan="5" style="text-align:right">
-TOTAL
-</td>
-
-<td id="grandTotal">
-0.00
-</td>
-
-</tr>
-
-<tr class="summary">
-
-<td colspan="5" style="text-align:right">
-Bal. Amount
-</td>
-
-<td id="balance">
-0.00
-</td>
-
-</tr>
-
-</tfoot>
-
-</table>
-
-</div>
-
-</div>
-
-
-<script>
-
-const vegetableNames = [
-
-"Tomato T",
-"Tomato B",
-"Alu (Potato)",
-"Onion",
-"Carrot",
-"Beans",
-"Lemon",
-"Keera",
-"Beetroot",
-"Cabbage",
-"Capsicum",
-"Gobi",
-"Mirchi",
-"Drumstick",
-"Dosakaya",
-"Sorakaya",
-"Baby Mirchi",
-"Mullangi",
-"Ginger",
-"Garlic",
-"Spring Onions",
-"Chocho",
-"Loobha",
-"Baigan",
-"Bendakai",
-"Chikkudukai",
-"Chamagadda",
-"Potlakai",
-"Gokarkai",
-"Gummadikaya",
-"Karvepaku",
-"Kothmira",
-"Pudina",
-"Palakura",
-"Thotakura",
-"Gongura",
-"Menthi",
-"Piled Garlic",
-"Baby Corn",
-"Mushroom",
-"Dondakai",
-"Beerakaya"
-
-];
-
-
-const tbody = document.querySelector("#items tbody");
-
-
-/* ADD ROW */
-
-function addRow(name = "") {
-
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-
-        <td class="serial"></td>
-
-        <td class="item">
-
-            <input
-                type="text"
-                value="${name}"
-                placeholder="Vegetable name"
-                oninput="calculate()"
-            >
-
-        </td>
-
-
-        <td>
-
-            <input
-                class="qty"
-                type="number"
-                min="0"
-                step="0.001"
-                placeholder="0"
-                oninput="calculate()"
-            >
-
-        </td>
-
-
-        <td>
-
-            <select
-                class="unit"
-                onchange="calculate()"
-            >
-
-                <option value="kg">kg</option>
-
-                <option value="g">g</option>
-
-            </select>
-
-        </td>
-
-
-        <td>
-
-            <input
-                class="rate"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0"
-                oninput="calculate()"
-            >
-
-        </td>
-
-
-        <td class="amount">
-            0.00
-        </td>
-
-    `;
-
-    tbody.appendChild(tr);
-
-    renumber();
-
-}
-
-
-/* SERIAL NUMBERS */
-
-function renumber() {
-
-    [...tbody.rows].forEach((row, index) => {
-
-        row.querySelector(".serial").textContent = index + 1;
-
-    });
-
-    calculate();
-
-}
-
-
-/* CALCULATE BILL */
-
-function calculate() {
-
-    let total = 0;
-
-
-    [...tbody.rows].forEach(row => {
-
-        const qty =
-            parseFloat(row.querySelector(".qty").value) || 0;
-
-        const unit =
-            row.querySelector(".unit").value;
-
-        const rate =
-            parseFloat(row.querySelector(".rate").value) || 0;
-
-
-        let quantityInKg;
-
-
-        /*
-        If unit is grams,
-        convert grams to kilograms.
-        */
-
-        if (unit === "g") {
-
-            quantityInKg = qty / 1000;
-
-        } else {
-
-            quantityInKg = qty;
-
+    <div class="app">
+
+        <section class="controls">
+            <h1 class="title">Create E-Bill</h1>
+
+            <div class="fields">
+                <label>Bill No.
+                    <input id="billNo" type="text" placeholder="Example: 1025">
+                </label>
+
+                <label>Date
+                    <input id="billDate" type="date">
+                </label>
+
+                <label>Customer Name / Mobile
+                    <input id="customer" type="text" placeholder="Optional">
+                </label>
+            </div>
+
+            <div class="actions">
+                <button class="add" type="button" id="addBtn">+ Add Item</button>
+                <button class="clear" type="button" id="clearBtn">Clear Items</button>
+                <button class="print" type="button" id="printBtn">Print / Save PDF</button>
+            </div>
+        </section>
+
+        <section class="bill">
+            <div class="shop">
+                <h1>SRI MAHESHWARI VEGETABLES</h1>
+                <p>Bowenpally Market, Secunderabad - 500 009. T.G</p>
+                <p>SAI KUMAR : 9666481283</p>
+            </div>
+
+            <div class="meta">
+                <div>No. : <strong id="showBillNo">____________</strong></div>
+                <div class="right">Date : <strong id="showDate">____________</strong></div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>PARTICULARS</th>
+                            <th>Qty.</th>
+                            <th>Unit</th>
+                            <th>Rate<br>₹ / kg</th>
+                            <th>Amount<br>₹</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                    <tfoot>
+                        <tr class="summary">
+                            <td colspan="5" style="text-align:right">TOTAL</td>
+                            <td id="grandTotal">0.00</td>
+                        </tr>
+                        <tr class="summary">
+                            <td colspan="5" style="text-align:right">Bal. Amount</td>
+                            <td id="balance">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const names = [
+            "Tomato T", "Tomato B", "Alu (Potato)", "Onion", "Carrot", "Beans", "Lemon", "Keera",
+            "Beetroot", "Cabbage", "Capsicum", "Gobi", "Mirchi", "Drumstick", "Dosakaya", "Sorakaya",
+            "Bail Mirchi", "Mullangi", "Ginger", "Garlic", "Spring Onions", "Chocho", "Loobha", "Baigan",
+            "Bendakai", "Chikkudukai", "Chamagadda", "Potlakai", "Gokarkai", "Gummadikaya", "Karvepaku",
+            "Kothmira", "Pudina", "Palakura", "Thotakura", "Gongura", "Menthi", "Piled Garlic", "Baby Corn",
+            "Mushroom", "Dondakai", "Beerakaya"
+        ];
+
+        const tbody = document.getElementById("tbody");
+
+        function addRow(name = "") {
+            const tr = document.createElement("tr");
+            const td = (cls, content) => {const e = document.createElement("td"); if (cls) e.className = cls; e.innerHTML = content; return e};
+
+            tr.appendChild(td("serial", ""));
+            const item = td("item", "");
+            const itemInput = document.createElement("input");
+            itemInput.type = "text"; itemInput.value = name; itemInput.placeholder = "Vegetable name";
+            itemInput.addEventListener("input", calculate);
+            item.appendChild(itemInput); tr.appendChild(item);
+
+            const q = td("", "");
+            const qi = document.createElement("input");
+            qi.className = "qty"; qi.type = "number"; qi.min = "0"; qi.step = "0.001"; qi.placeholder = "0";
+            qi.addEventListener("input", calculate); q.appendChild(qi); tr.appendChild(q);
+
+            const u = td("", "");
+            const sel = document.createElement("select"); sel.className = "unit";
+            sel.innerHTML = '<option value="kg">kg</option><option value="g">g</option>';
+            sel.addEventListener("change", calculate); u.appendChild(sel); tr.appendChild(u);
+
+            const r = td("", "");
+            const ri = document.createElement("input");
+            ri.className = "rate"; ri.type = "number"; ri.min = "0"; ri.step = "0.01"; ri.placeholder = "0";
+            ri.addEventListener("input", calculate); r.appendChild(ri); tr.appendChild(r);
+
+            tr.appendChild(td("amount", "0.00"));
+            tbody.appendChild(tr);
+            renumber();
         }
 
+        function renumber() {
+            [...tbody.rows].forEach((r, i) => r.querySelector(".serial").textContent = i + 1);
+            calculate();
+        }
 
-        const amount =
-            quantityInKg * rate;
+        function calculate() {
+            let total = 0;
+            [...tbody.rows].forEach(r => {
+                const qty = parseFloat(r.querySelector(".qty").value) || 0;
+                const rate = parseFloat(r.querySelector(".rate").value) || 0;
+                const unit = r.querySelector(".unit").value;
+                const kg = unit === "g" ? qty / 1000 : qty;
+                const amount = kg * rate;
+                total += amount;
+                r.querySelector(".amount").textContent = amount.toFixed(2);
+            });
+            document.getElementById("grandTotal").textContent = total.toFixed(2);
+            document.getElementById("balance").textContent = total.toFixed(2);
+        }
 
+        document.getElementById("addBtn").addEventListener("click", () => addRow());
+        document.getElementById("clearBtn").addEventListener("click", () => {tbody.innerHTML = ""; calculate()});
+        document.getElementById("printBtn").addEventListener("click", () => window.print());
 
-        total += amount;
+        document.getElementById("billNo").addEventListener("input", e => {
+            document.getElementById("showBillNo").textContent = e.target.value || "____________";
+        });
+        document.getElementById("billDate").addEventListener("input", e => {
+            if (!e.target.value) {document.getElementById("showDate").textContent = "____________"; return }
+            const [y, m, d] = e.target.value.split("-");
+            document.getElementById("showDate").textContent = `${d}/${m}/${y}`;
+        });
 
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        document.getElementById("billDate").value = `${yyyy}-${mm}-${dd}`;
+        document.getElementById("showDate").textContent = `${dd}/${mm}/${yyyy}`;
 
-        row.querySelector(".amount").textContent =
-            amount.toFixed(2);
-
-    });
-
-
-    document.getElementById("grandTotal")
-        .textContent = total.toFixed(2);
-
-
-    document.getElementById("balance")
-        .textContent = total.toFixed(2);
-
-}
-
-
-/* CLEAR ITEMS */
-
-function clearItems() {
-
-    tbody.innerHTML = "";
-
-    calculate();
-
-}
-
-
-/* BILL NUMBER */
-
-document.getElementById("billNo")
-.addEventListener("input", function() {
-
-    document.getElementById("showBillNo")
-        .textContent =
-        this.value || "____________";
-
-});
-
-
-/* DATE */
-
-document.getElementById("billDate")
-.addEventListener("input", function() {
-
-    if (!this.value) {
-
-        document.getElementById("showDate")
-            .textContent = "____________";
-
-        return;
-
-    }
-
-
-    const date =
-        new Date(this.value + "T00:00:00");
-
-
-    document.getElementById("showDate")
-        .textContent =
-        date.toLocaleDateString("en-IN");
-
-});
-
-
-/* TODAY'S DATE */
-
-const today = new Date();
-
-document.getElementById("billDate")
-.value = today.toISOString().slice(0,10);
-
-document.getElementById("showDate")
-.textContent =
-today.toLocaleDateString("en-IN");
-
-
-/* CREATE VEGETABLE ROWS */
-
-vegetableNames.forEach(function(name) {
-
-    addRow(name);
-
-});
-
-</script>
-
+        names.forEach(addRow);
+    </script>
 </body>
+
 </html>
