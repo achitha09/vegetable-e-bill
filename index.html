@@ -4,138 +4,636 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sri Maheshwari Vegetables - E-Bill</title>
+
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#f3f3f3;margin:0;padding:20px;color:#111}
-.container{max-width:900px;margin:auto}
-.controls{background:#fff;padding:18px;border-radius:10px;margin-bottom:18px;box-shadow:0 2px 8px #0001}
-h2{margin:0 0 15px;text-align:center}
-.top-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-label{font-size:13px;font-weight:bold}
-input{width:100%;padding:8px;border:1px solid #aaa;border-radius:4px;margin-top:4px}
-button{border:0;padding:10px 16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:12px}
-.add{background:#222;color:#fff}
-.print{background:#1769aa;color:#fff;margin-left:8px}
-.clear{background:#ddd}
-.bill{background:#fff;width:100%;padding:24px;border:1px solid #222}
-.shop{text-align:center;border-bottom:1px solid #222;padding-bottom:8px}
-.shop h1{font-size:25px;margin:0 0 4px}
-.shop p{margin:3px;font-weight:bold}
-.meta{display:grid;grid-template-columns:1fr 1fr;margin:12px 0}
-.meta div{padding:4px 0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{border:1px solid #222;padding:5px;text-align:center}
-th{font-weight:bold}
-td.item{text-align:left}
-.qty,.rate{width:80px}
-.amount{width:105px}
-.summary td{font-weight:bold;height:30px}
-@media(max-width:650px){
- body{padding:8px}.top-fields{grid-template-columns:1fr 1fr}.bill{padding:10px}.shop h1{font-size:19px}
- table{font-size:10px}th,td{padding:3px}.qty,.rate,.amount{width:auto}
+* {
+    box-sizing: border-box;
 }
-@media print{
- body{background:#fff;padding:0}.controls{display:none}.container{max-width:none}.bill{border:0;padding:8mm}
- @page{size:A4 portrait;margin:8mm}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+    color: #111;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+}
+
+.controls {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.controls h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.top-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 9px;
+    margin-top: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 16px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add {
+    background: #222;
+    color: white;
+}
+
+.print {
+    background: #1769aa;
+    color: white;
+    margin-left: 8px;
+}
+
+.clear {
+    background: #ddd;
+    margin-left: 8px;
+}
+
+.bill {
+    background: white;
+    padding: 25px;
+    border: 1px solid #222;
+}
+
+.shop {
+    text-align: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 10px;
+}
+
+.shop h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.shop p {
+    margin: 4px;
+    font-weight: bold;
+}
+
+.meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 12px 0;
+}
+
+.meta div:last-child {
+    text-align: right;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #222;
+    padding: 6px;
+    text-align: center;
+    font-size: 13px;
+}
+
+th {
+    font-weight: bold;
+}
+
+.item {
+    text-align: left;
+}
+
+.qty {
+    width: 75px;
+}
+
+.unit {
+    width: 70px;
+}
+
+.rate {
+    width: 90px;
+}
+
+.amount {
+    width: 110px;
+    font-weight: bold;
+}
+
+.summary td {
+    font-weight: bold;
+    height: 32px;
+}
+
+@media(max-width: 650px) {
+
+    body {
+        padding: 8px;
+    }
+
+    .top-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .bill {
+        padding: 10px;
+    }
+
+    .shop h1 {
+        font-size: 19px;
+    }
+
+    th,
+    td {
+        padding: 4px;
+        font-size: 10px;
+    }
+
+    .qty,
+    .unit,
+    .rate,
+    .amount {
+        width: auto;
+    }
+}
+
+@media print {
+
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .controls {
+        display: none;
+    }
+
+    .container {
+        max-width: none;
+    }
+
+    .bill {
+        border: none;
+        padding: 8mm;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 8mm;
+    }
 }
 </style>
 </head>
+
 <body>
+
 <div class="container">
 
+<!-- BILL CONTROLS -->
+
 <div class="controls">
+
 <h2>Create E-Bill</h2>
+
 <div class="top-fields">
-<label>Bill No.<input id="billNo" placeholder="e.g. 1025"></label>
-<label>Date<input id="billDate" type="date"></label>
-<label>Customer No. / Name<input id="customer" placeholder="Optional"></label>
-</div>
-<button class="add" onclick="addRow()">+ Add Item</button>
-<button class="clear" onclick="clearItems()">Clear Items</button>
-<button class="print" onclick="window.print()">Print / Save PDF</button>
+
+<label>
+Bill No.
+<input id="billNo" type="text" placeholder="Example: 1025">
+</label>
+
+<label>
+Date
+<input id="billDate" type="date">
+</label>
+
+<label>
+Customer Name / Mobile
+<input id="customer" type="text" placeholder="Optional">
+</label>
+
 </div>
 
-<div class="bill" id="bill">
-<div class="shop">
-<h1>SRI MAHESHWARI VEGETABLES</h1>
-<p>Bowenpally Market, Secunderabad - 500 009. T.G</p>
-<p>SAI KUMAR : 9666481283</p>
+<button class="add" onclick="addRow()">
++ Add Item
+</button>
+
+<button class="clear" onclick="clearItems()">
+Clear Items
+</button>
+
+<button class="print" onclick="window.print()">
+Print / Save PDF
+</button>
+
 </div>
+
+
+<!-- BILL -->
+
+<div class="bill">
+
+<div class="shop">
+
+<h1>SRI MAHESHWARI VEGETABLES</h1>
+
+<p>
+Bowenpally Market, Secunderabad - 500 009. T.G
+</p>
+
+<p>
+SAI KUMAR : 9666481283
+</p>
+
+</div>
+
 
 <div class="meta">
-<div>No. : <strong id="showBillNo">____________</strong></div>
-<div style="text-align:right">Date : <strong id="showDate">____________</strong></div>
+
+<div>
+No. :
+<strong id="showBillNo">____________</strong>
 </div>
+
+<div>
+Date :
+<strong id="showDate">____________</strong>
+</div>
+
+</div>
+
 
 <table id="items">
+
 <thead>
-<tr><th>S. No.</th><th>PARTICULARS</th><th>Qty.</th><th>Rate</th><th>Amount<br>Rs. Ps.</th></tr>
+
+<tr>
+
+<th>S. No.</th>
+
+<th>PARTICULARS</th>
+
+<th>Qty.</th>
+
+<th>Unit</th>
+
+<th>Rate<br>₹ / kg</th>
+
+<th>Amount<br>₹</th>
+
+</tr>
+
 </thead>
+
+
 <tbody></tbody>
+
+
 <tfoot>
-<tr class="summary"><td colspan="4" style="text-align:right">TOTAL</td><td id="grandTotal">0.00</td></tr>
-<tr class="summary"><td colspan="4" style="text-align:right">Bal. Amount</td><td id="balance">0.00</td></tr>
+
+<tr class="summary">
+
+<td colspan="5" style="text-align:right">
+TOTAL
+</td>
+
+<td id="grandTotal">
+0.00
+</td>
+
+</tr>
+
+<tr class="summary">
+
+<td colspan="5" style="text-align:right">
+Bal. Amount
+</td>
+
+<td id="balance">
+0.00
+</td>
+
+</tr>
+
 </tfoot>
+
 </table>
+
 </div>
+
 </div>
+
 
 <script>
-const names = [
-"Tomato T","Tomato B","Alu (Potato)","Onion","Carrot","Beans","Lemon","Keera",
-"Beetroot","Cabbage","Capsicum","Gobi","Mirchi","Drumstick","Dosakaya","Sorakaya",
-"Bail Mirchi","Mullangi","Ginger","Garlic","Spring Onions","Chocho","Loobha","Baigan",
-"Bendakai","Chikkudukai","Chamagadda","Potlakai","Gokarkai","Gummadikaya","Karvepaku",
-"Kothmira","Pudina","Palakura","Thotakura","Gongura","Menthi","Piled Garlic","Baby Corn",
-"Mushroom","Dondakai","Beerakaya"
+
+const vegetableNames = [
+
+"Tomato T",
+"Tomato B",
+"Alu (Potato)",
+"Onion",
+"Carrot",
+"Beans",
+"Lemon",
+"Keera",
+"Beetroot",
+"Cabbage",
+"Capsicum",
+"Gobi",
+"Mirchi",
+"Drumstick",
+"Dosakaya",
+"Sorakaya",
+"Baby Mirchi",
+"Mullangi",
+"Ginger",
+"Garlic",
+"Spring Onions",
+"Chocho",
+"Loobha",
+"Baigan",
+"Bendakai",
+"Chikkudukai",
+"Chamagadda",
+"Potlakai",
+"Gokarkai",
+"Gummadikaya",
+"Karvepaku",
+"Kothmira",
+"Pudina",
+"Palakura",
+"Thotakura",
+"Gongura",
+"Menthi",
+"Piled Garlic",
+"Baby Corn",
+"Mushroom",
+"Dondakai",
+"Beerakaya"
+
 ];
 
-const tbody=document.querySelector("#items tbody");
 
-function addRow(name=""){
- const tr=document.createElement("tr");
- tr.innerHTML=`<td class="serial"></td>
- <td class="item"><input value="${name}" placeholder="Vegetable name" oninput="renumber()"></td>
- <td><input class="qty" type="number" min="0" step="0.001" placeholder="0" oninput="calculate()"></td>
- <td><input class="rate" type="number" min="0" step="0.01" placeholder="0" oninput="calculate()"></td>
- <td class="amount">0.00</td>`;
- tbody.appendChild(tr); renumber();
+const tbody = document.querySelector("#items tbody");
+
+
+/* ADD ROW */
+
+function addRow(name = "") {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+
+        <td class="serial"></td>
+
+        <td class="item">
+
+            <input
+                type="text"
+                value="${name}"
+                placeholder="Vegetable name"
+                oninput="calculate()"
+            >
+
+        </td>
+
+
+        <td>
+
+            <input
+                class="qty"
+                type="number"
+                min="0"
+                step="0.001"
+                placeholder="0"
+                oninput="calculate()"
+            >
+
+        </td>
+
+
+        <td>
+
+            <select
+                class="unit"
+                onchange="calculate()"
+            >
+
+                <option value="kg">kg</option>
+
+                <option value="g">g</option>
+
+            </select>
+
+        </td>
+
+
+        <td>
+
+            <input
+                class="rate"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0"
+                oninput="calculate()"
+            >
+
+        </td>
+
+
+        <td class="amount">
+            0.00
+        </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+    renumber();
+
 }
 
-function renumber(){
- [...tbody.rows].forEach((r,i)=>r.querySelector(".serial").textContent=i+1);
- calculate();
+
+/* SERIAL NUMBERS */
+
+function renumber() {
+
+    [...tbody.rows].forEach((row, index) => {
+
+        row.querySelector(".serial").textContent = index + 1;
+
+    });
+
+    calculate();
+
 }
 
-function calculate(){
- let total=0;
- [...tbody.rows].forEach(r=>{
-   const q=parseFloat(r.querySelector(".qty").value)||0;
-   const rate=parseFloat(r.querySelector(".rate").value)||0;
-   const amount=q*rate; total+=amount;
-   r.querySelector(".amount").textContent=amount.toFixed(2);
- });
- document.getElementById("grandTotal").textContent=total.toFixed(2);
- document.getElementById("balance").textContent=total.toFixed(2);
+
+/* CALCULATE BILL */
+
+function calculate() {
+
+    let total = 0;
+
+
+    [...tbody.rows].forEach(row => {
+
+        const qty =
+            parseFloat(row.querySelector(".qty").value) || 0;
+
+        const unit =
+            row.querySelector(".unit").value;
+
+        const rate =
+            parseFloat(row.querySelector(".rate").value) || 0;
+
+
+        let quantityInKg;
+
+
+        /*
+        If unit is grams,
+        convert grams to kilograms.
+        */
+
+        if (unit === "g") {
+
+            quantityInKg = qty / 1000;
+
+        } else {
+
+            quantityInKg = qty;
+
+        }
+
+
+        const amount =
+            quantityInKg * rate;
+
+
+        total += amount;
+
+
+        row.querySelector(".amount").textContent =
+            amount.toFixed(2);
+
+    });
+
+
+    document.getElementById("grandTotal")
+        .textContent = total.toFixed(2);
+
+
+    document.getElementById("balance")
+        .textContent = total.toFixed(2);
+
 }
 
-function clearItems(){tbody.innerHTML="";calculate();}
 
-document.getElementById("billNo").addEventListener("input",e=>{
- document.getElementById("showBillNo").textContent=e.target.value||"____________";
+/* CLEAR ITEMS */
+
+function clearItems() {
+
+    tbody.innerHTML = "";
+
+    calculate();
+
+}
+
+
+/* BILL NUMBER */
+
+document.getElementById("billNo")
+.addEventListener("input", function() {
+
+    document.getElementById("showBillNo")
+        .textContent =
+        this.value || "____________";
+
 });
-document.getElementById("billDate").addEventListener("input",e=>{
- if(!e.target.value){document.getElementById("showDate").textContent="____________";return}
- const d=new Date(e.target.value+"T00:00:00");
- document.getElementById("showDate").textContent=d.toLocaleDateString("en-IN");
+
+
+/* DATE */
+
+document.getElementById("billDate")
+.addEventListener("input", function() {
+
+    if (!this.value) {
+
+        document.getElementById("showDate")
+            .textContent = "____________";
+
+        return;
+
+    }
+
+
+    const date =
+        new Date(this.value + "T00:00:00");
+
+
+    document.getElementById("showDate")
+        .textContent =
+        date.toLocaleDateString("en-IN");
+
 });
 
-const today=new Date();
-document.getElementById("billDate").value=today.toISOString().slice(0,10);
-document.getElementById("showDate").textContent=today.toLocaleDateString("en-IN");
 
-// Start with the same vegetable names as the physical bill.
-names.forEach(n=>addRow(n));
+/* TODAY'S DATE */
+
+const today = new Date();
+
+document.getElementById("billDate")
+.value = today.toISOString().slice(0,10);
+
+document.getElementById("showDate")
+.textContent =
+today.toLocaleDateString("en-IN");
+
+
+/* CREATE VEGETABLE ROWS */
+
+vegetableNames.forEach(function(name) {
+
+    addRow(name);
+
+});
+
 </script>
+
 </body>
 </html>
