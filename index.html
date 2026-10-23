@@ -1,781 +1,530 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sri Maheshwari Vegetables - E-Bill</title>
-
-<style>
-* {
-    box-sizing: border-box;
-}
-
-:root {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    margin: 0;
-    padding: 16px;
-    background: #f3f4f6;
-    color: #111;
-}
-
-.app {
-    width: min(1200px, 100%);
-    margin: auto;
-}
-
-.controls,
-.bill {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-}
-
-.controls {
-    padding: 20px;
-    margin-bottom: 16px;
-}
-
-.title {
-    text-align: center;
-    margin: 0 0 18px;
-    font-size: 26px;
-}
-
-.fields {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-}
-
-label {
-    font-size: 13px;
-    font-weight: 700;
-}
-
-input,
-select {
-    width: 100%;
-    height: 40px;
-    margin-top: 5px;
-    padding: 8px;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    font-size: 15px;
-    background: #fff;
-}
-
-.actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-}
-
-button {
-    min-height: 42px;
-    padding: 10px 16px;
-    border: 0;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.add {
-    background: #222;
-    color: #fff;
-}
-
-.clear {
-    background: #e5e5e5;
-    color: #111;
-}
-
-.print {
-    background: #1769aa;
-    color: #fff;
-}
-
-/* Bill layout */
-.bill {
-    padding: 16px;
-    border-radius: 4px;
-}
-
-.shop {
-    text-align: center;
-    border-bottom: 1px solid #222;
-    padding-bottom: 6px;
-}
-
-.shop h1 {
-    margin: 0 0 4px;
-    font-size: 23px;
-}
-
-.shop p {
-    margin: 2px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin: 8px 0;
-    font-size: 12px;
-}
-
-.meta .right {
-    text-align: right;
-}
-
-.customer-line {
-    border-bottom: 1px solid #222;
-    padding: 4px 0 6px;
-    margin-bottom: 6px;
-    font-size: 12px;
-}
-
-.table-wrap {
-    width: 100%;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-th,
-td {
-    border: 1px solid #222;
-    padding: 3px 4px;
-    text-align: center;
-    font-size: 11px;
-    line-height: 1.1;
-}
-
-th {
-    font-weight: 700;
-}
-
-th:nth-child(1),
-td:nth-child(1) {
-    width: 7%;
-}
-
-th:nth-child(2),
-td:nth-child(2) {
-    width: 31%;
-}
-
-th:nth-child(3),
-td:nth-child(3) {
-    width: 13%;
-}
-
-th:nth-child(4),
-td:nth-child(4) {
-    width: 12%;
-}
-
-th:nth-child(5),
-td:nth-child(5) {
-    width: 17%;
-}
-
-th:nth-child(6),
-td:nth-child(6) {
-    width: 20%;
-}
-
-.item {
-    text-align: left;
-}
-
-.item input {
-    width: 100%;
-    height: 26px;
-    margin: 0;
-    padding: 3px;
-    border: 0;
-    border-radius: 0;
-    font-size: 11px;
-}
-
-.qty,
-.rate,
-.unit {
-    width: 100% !important;
-    height: 26px !important;
-    min-width: 0;
-    margin: 0 !important;
-    padding: 2px !important;
-    border: 0;
-    border-radius: 0;
-    font-size: 11px !important;
-    background: transparent;
-}
-
-.amount {
-    font-weight: 700;
-    overflow-wrap: anywhere;
-}
-
-.summary td {
-    font-weight: 700;
-    padding: 5px 3px;
-}
-
-/* Mobile screen */
-@media (max-width: 700px) {
-    body {
-        padding: 8px;
-    }
-
-    .controls {
-        padding: 12px;
-    }
-
-    .fields {
-        grid-template-columns: 1fr;
-    }
-
-    .actions button {
-        flex: 1 1 30%;
-        min-width: 100px;
-    }
-
-    .bill {
-        padding: 8px;
-    }
-
-    .shop h1 {
-        font-size: 18px;
-    }
-
-    .shop p {
-        font-size: 10px;
-    }
-
-    .meta,
-    .customer-line {
-        font-size: 10px;
-    }
-
-    .table-wrap {
-        overflow-x: visible;
-    }
-
-    th,
-    td {
-        padding: 3px 2px;
-        font-size: 9px;
-        overflow-wrap: anywhere;
-    }
-
-    .item input,
-    .qty,
-    .rate,
-    .unit {
-        height: 28px !important;
-        font-size: 9px !important;
-        padding: 1px !important;
-    }
-}
-
-/* A4 ONE-PAGE PRINT LAYOUT */
-@media print {
-    @page {
-        size: A4 portrait;
-        margin: 4mm;
-    }
-
-    html,
-    body {
-        width: 100%;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #fff !important;
-        color: #000;
-    }
-
-    body {
-        font-size: 8px;
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
-    }
-
-    .controls {
-        display: none !important;
-    }
-
-    .app {
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .bill {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .shop {
-        padding-bottom: 2px;
-    }
-
-    .shop h1 {
-        font-size: 14px;
-        margin: 0 0 2px;
-    }
-
-    .shop p {
-        font-size: 8px;
-        margin: 1px;
-    }
-
-    .meta {
-        margin: 3px 0;
-        font-size: 8px;
-    }
-
-    .customer-line {
-        font-size: 8px;
-        padding: 2px 0 3px;
-        margin-bottom: 3px;
-    }
-
-    .table-wrap {
-        width: 100%;
-        overflow: visible;
-    }
-
-    table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        font-size: 7.5px;
-        line-height: 1;
-        padding: 0 2px;
-        border: 0.5px solid #222;
-        height: 11px;
-        overflow-wrap: anywhere;
-    }
-
-    th {
-        font-size: 7.5px;
-        font-weight: 700;
-        height: 20px;
-    }
-
-    .item {
-        text-align: left;
-    }
-
-    .item input,
-    .qty,
-    .rate,
-    .unit {
-        width: 100% !important;
-        height: 10px !important;
-        min-height: 0 !important;
-        margin: 0 !important;
-        padding: 0 1px !important;
-        border: 0 !important;
-        border-radius: 0 !important;
-        outline: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        font-size: 7.5px !important;
-        line-height: 1 !important;
-        appearance: none;
-        -webkit-appearance: none;
-    }
-
-    .item input {
-        text-align: left;
-    }
-
-    .amount {
-        font-size: 7.5px;
-        font-weight: 700;
-    }
-
-    .summary td {
-        height: 14px;
-        padding: 1px 2px;
-        font-size: 8px;
-        font-weight: 700;
-    }
-
-    tr {
-        break-inside: avoid;
-        page-break-inside: avoid;
-    }
-
-    thead {
-        display: table-header-group;
-    }
-
-    tfoot {
-        display: table-row-group;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Maheshwari Vegetables - Bill</title>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        :root {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #111
+        }
+
+        body {
+            margin: 0;
+            padding: 18px;
+            background: #f2f2f2
+        }
+
+        .app {
+            max-width: 1000px;
+            margin: 0 auto
+        }
+
+        .controls {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 18px
+        }
+
+        .controls h2 {
+            margin: 0 0 14px;
+            text-align: center;
+            font-size: 22px
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold
+        }
+
+        input,
+        select {
+            font: inherit
+        }
+
+        .fields input {
+            display: block;
+            width: 100%;
+            height: 38px;
+            margin-top: 5px;
+            padding: 7px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px
+        }
+
+        button {
+            border: 0;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer
+        }
+
+        .add,
+        .print {
+            background: #222;
+            color: white
+        }
+
+        .clear {
+            background: #e5e5e5;
+            color: #111
+        }
+
+        .bill {
+            width: 82%;
+            margin: 0 auto;
+            background: #fff;
+            border: 1.5px solid #222;
+            padding: 10px 12px
+        }
+
+        .shop {
+            text-align: center;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #222
+        }
+
+        .shop h1 {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 21px;
+            letter-spacing: .2px;
+            margin: 0 0 4px;
+            font-weight: 800
+        }
+
+        .shop p {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 2px 0
+        }
+
+        .meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 9px 0 5px;
+            font-size: 12px
+        }
+
+        .meta .right {
+            text-align: right
+        }
+
+        .customer-line {
+            font-size: 12px;
+            min-height: 24px;
+            padding: 4px 0 6px;
+            border-bottom: 1px dotted #222;
+            margin-bottom: 6px
+        }
+
+        .table-wrap {
+            width: 100%
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed
+        }
+
+        th,
+        td {
+            border: 1px solid #222;
+            text-align: center;
+            padding: 3px 4px;
+            font-size: 11px;
+            line-height: 1.1;
+            height: 22px
+        }
+
+        th {
+            font-weight: bold;
+            background: #fff
+        }
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 7%
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 36%
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 17%
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 17%
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 23%
+        }
+
+        .item {
+            text-align: left;
+            padding-left: 7px
+        }
+
+        .item input {
+            display: block;
+            width: 100%;
+            height: 20px;
+            border: 0;
+            padding: 1px 2px;
+            margin: 0;
+            background: transparent;
+            font-size: 11px;
+            outline: none
+        }
+
+        .qtybox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px
+        }
+
+        .qty {
+            width: 58%;
+            min-width: 0;
+            height: 20px;
+            border: 0;
+            padding: 1px;
+            text-align: center;
+            background: transparent;
+            font-size: 11px;
+            outline: none
+        }
+
+        .unit {
+            width: 38%;
+            min-width: 0;
+            height: 20px;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            font-size: 10px;
+            outline: none
+        }
+
+        .rate {
+            width: 100%;
+            height: 20px;
+            border: 0;
+            padding: 1px;
+            text-align: center;
+            background: transparent;
+            font-size: 11px;
+            outline: none
+        }
+
+        .amount {
+            font-weight: bold;
+            white-space: nowrap
+        }
+
+        .summary td {
+            height: 25px;
+            font-weight: bold;
+            padding: 4px
+        }
+
+        .summary td:first-child {
+            text-align: right
+        }
+
+        @media(max-width:700px) {
+            body {
+                padding: 8px
+            }
+
+            .fields {
+                grid-template-columns: 1fr
+            }
+
+            .bill {
+                width: 100%;
+                padding: 7px
+            }
+
+            .shop h1 {
+                font-size: 17px
+            }
+
+            .shop p,
+            .meta,
+            .customer-line {
+                font-size: 10px
+            }
+
+            th,
+            td {
+                font-size: 9px;
+                padding: 2px
+            }
+
+            .item input,
+            .qty,
+            .rate {
+                font-size: 9px
+            }
+
+            .unit {
+                font-size: 8px
+            }
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 5mm
+        }
+
+        @media print {
+
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100%;
+                background: #fff !important;
+                color: #000 !important
+            }
+
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact
+            }
+
+            .controls {
+                display: none !important
+            }
+
+            .app {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 0
+            }
+
+            .bill {
+                width: 82%;
+                margin: 0 auto;
+                padding: 2.5mm 3mm;
+                border: 1px solid #000;
+                border-radius: 0;
+                box-shadow: none
+            }
+
+            .shop {
+                padding-bottom: 1.5mm
+            }
+
+            .shop h1 {
+                font-size: 14pt;
+                margin: 0 0 1mm;
+                letter-spacing: 0
+            }
+
+            .shop p {
+                font-size: 8.5pt;
+                margin: .4mm 0
+            }
+
+            .meta {
+                font-size: 8.5pt;
+                margin: 2mm 0 1mm;
+                gap: 3mm
+            }
+
+            .customer-line {
+                font-size: 8.5pt;
+                min-height: 7mm;
+                padding: 1mm 0 1.5mm;
+                margin-bottom: 1.5mm
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse
+            }
+
+            th,
+            td {
+                font-size: 8.5pt;
+                line-height: 1.05;
+                height: 5mm;
+                padding: .4mm 1mm;
+                border: 1px solid #000;
+                overflow: hidden
+            }
+
+            th {
+                height: 8mm;
+                font-size: 8.5pt
+            }
+
+            .item {
+                padding-left: 2mm
+            }
+
+            .item input,
+            .qty,
+            .rate {
+                height: 4.5mm !important;
+                font-size: 8.5pt !important;
+                padding: 0 .5mm !important;
+                border: 0 !important;
+                background: transparent !important;
+                color: #000 !important;
+                appearance: none;
+                -webkit-appearance: none
+            }
+
+            .unit {
+                height: 4.5mm !important;
+                font-size: 7.5pt !important;
+                padding: 0 !important;
+                border: 0 !important;
+                background: transparent !important;
+                color: #000 !important;
+                appearance: none;
+                -webkit-appearance: none
+            }
+
+            .amount {
+                font-size: 8.5pt;
+                font-weight: normal
+            }
+
+            .summary td {
+                height: 6mm;
+                font-size: 9pt;
+                padding: .5mm 1mm;
+                font-weight: bold
+            }
+
+            tr {
+                break-inside: avoid;
+                page-break-inside: avoid
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="app">
-
-    <section class="controls">
-        <h1 class="title">Create E-Bill</h1>
-
-        <div class="fields">
-            <label>
-                Bill No.
-                <input id="billNo" type="text" placeholder="Example: 1025">
-            </label>
-
-            <label>
-                Date
-                <input id="billDate" type="date">
-            </label>
-
-            <label>
-                Customer Name / Mobile
-                <input id="customer" type="text" placeholder="Optional">
-            </label>
-        </div>
-
-        <div class="actions">
-            <button class="add" type="button" id="addBtn">
-                + Add Item
-            </button>
-
-            <button class="clear" type="button" id="clearBtn">
-                Clear Items
-            </button>
-
-            <button class="print" type="button" id="printBtn">
-                Print / Save PDF
-            </button>
-        </div>
-    </section>
-
-    <section class="bill">
-
-        <div class="shop">
-            <h1>SRI MAHESHWARI VEGETABLES</h1>
-            <p>Bowenpally Market, Secunderabad - 500 009. T.G</p>
-            <p>SAI KUMAR : 9666481283</p>
-        </div>
-
-        <div class="meta">
-            <div>
-                No. : <strong id="showBillNo">____________</strong>
+    <div class="app">
+        <section class="controls">
+            <h2>Create Vegetable Bill</h2>
+            <div class="fields">
+                <label>Bill No.<input id="billNo" type="text" placeholder="Example: 1025"></label>
+                <label>Date<input id="billDate" type="date"></label>
+                <label>Customer Name / Mobile<input id="customer" type="text" placeholder="Optional"></label>
             </div>
-
-            <div class="right">
-                Date : <strong id="showDate">____________</strong>
+            <div class="actions">
+                <button class="add" id="addBtn" type="button">+ Add Item</button>
+                <button class="clear" id="clearBtn" type="button">Clear Items</button>
+                <button class="print" id="printBtn" type="button">Print / Save PDF</button>
             </div>
-        </div>
-
-        <div class="customer-line">
-            Customer Name / Mobile :
-            <strong id="showCustomer">____________________________</strong>
-        </div>
-
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S. No.</th>
-                        <th>PARTICULARS</th>
-                        <th>Qty.</th>
-                        <th>Unit</th>
-                        <th>Rate<br>₹ / kg</th>
-                        <th>Amount<br>₹</th>
-                    </tr>
-                </thead>
-
-                <tbody id="tbody"></tbody>
-
-                <tfoot>
-                    <tr class="summary">
-                        <td colspan="5" style="text-align:right">
-                            TOTAL
-                        </td>
-                        <td id="grandTotal">0.00</td>
-                    </tr>
-
-                    <tr class="summary">
-                        <td colspan="5" style="text-align:right">
-                            Bal. Amount
-                        </td>
-                        <td id="balance">0.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-    </section>
-</div>
-
-<script>
-const names = [
-    "Tomato T",
-    "Tomato B",
-    "Alu (Potato)",
-    "Onion",
-    "Carrot",
-    "Beans",
-    "Lemon",
-    "Keera",
-    "Beetroot",
-    "Cabbage",
-    "Capsicum",
-    "Gobi",
-    "Mirchi",
-    "Drumstick",
-    "Dosakaya",
-    "Sorakaya",
-    "Bail Mirchi",
-    "Mullangi",
-    "Ginger",
-    "Garlic",
-    "Spring Onions",
-    "Chocho",
-    "Loobha",
-    "Baigan",
-    "Bendakai",
-    "Chikkudukai",
-    "Chamagadda",
-    "Potlakai",
-    "Gokarkai",
-    "Gummadikaya",
-    "Karvepaku",
-    "Kothmira",
-    "Pudina",
-    "Palakura",
-    "Thotakura",
-    "Gongura",
-    "Menthi",
-    "Piled Garlic",
-    "Baby Corn",
-    "Mushroom",
-    "Dondakai",
-    "Beerakaya"
-];
-
-const tbody = document.getElementById("tbody");
-
-function addRow(name = "") {
-    const tr = document.createElement("tr");
-
-    function createCell(className = "", content = "") {
-        const td = document.createElement("td");
-
-        if (className) {
-            td.className = className;
+        </section>
+        <section class="bill">
+            <header class="shop">
+                <h1>SRI MAHESHWARI VEGETABLES</h1>
+                <p>Bowenpally Market, Secunderabad - 500 009. T.G</p>
+                <p>SAI KUMAR : 9666481283</p>
+            </header>
+            <div class="meta">
+                <div>No. : <strong id="showBillNo">____________</strong></div>
+                <div class="right">Date: <strong id="showDate">____________</strong></div>
+            </div>
+            <div class="customer-line">Customer Name / Mobile: <strong
+                    id="showCustomer">________________________________</strong></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.<br>No.</th>
+                            <th>PARTICULARS</th>
+                            <th>Qty.</th>
+                            <th>Rate<br>₹</th>
+                            <th>Amount<br>Rs.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                    <tfoot>
+                        <tr class="summary">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>TOTAL</td>
+                            <td id="grandTotal">0.00</td>
+                        </tr>
+                        <tr class="summary">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Bal. Amount</td>
+                            <td id="balance">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script>
+        const names = ["Tomato T", "Tomato B", "Alu (Potato)", "Onion", "Carrot", "Beans", "Lemon", "Keera", "Beetroot", "Cabbage", "Capsicum", "Gobi", "Mirchi", "Drumstick", "Dosakaya", "Sorakaya", "Bail Mirchi", "Mullangi", "Ginger", "Garlic", "Spring Onions", "Chocho", "Loobha", "Baigan", "Bendakai", "Chikkudukai", "Chamagadda", "Potlakai", "Gokarkai", "Gummadikaya", "Karvepaku", "Kothmira", "Pudina", "Palakura", "Thotakura", "Gongura", "Menthi", "Piled Garlic", "Baby Corn", "Mushroom", "Dondakai", "Beerakaya"];
+        const tbody = document.getElementById('tbody');
+        function cell(cls = '', text = '') {const td = document.createElement('td'); if (cls) td.className = cls; td.textContent = text; return td}
+        function addRow(name = '') {
+            const tr = document.createElement('tr'); tr.appendChild(cell('serial'));
+            const item = cell('item'); const itemInput = document.createElement('input'); itemInput.type = 'text'; itemInput.value = name; itemInput.setAttribute('aria-label', 'Vegetable name'); itemInput.addEventListener('input', calculate); item.appendChild(itemInput); tr.appendChild(item);
+            const qtyCell = cell(); const box = document.createElement('div'); box.className = 'qtybox'; const qty = document.createElement('input'); qty.className = 'qty'; qty.type = 'number'; qty.min = '0'; qty.step = '0.001'; qty.placeholder = '0'; qty.setAttribute('aria-label', 'Quantity'); const unit = document.createElement('select'); unit.className = 'unit'; unit.setAttribute('aria-label', 'Unit');[['kg', 'kg'], ['g', 'g']].forEach(([v, t]) => {const o = document.createElement('option'); o.value = v; o.textContent = t; unit.appendChild(o)}); qty.addEventListener('input', calculate); unit.addEventListener('change', calculate); box.append(qty, unit); qtyCell.appendChild(box); tr.appendChild(qtyCell);
+            const rateCell = cell(); const rate = document.createElement('input'); rate.className = 'rate'; rate.type = 'number'; rate.min = '0'; rate.step = '0.01'; rate.placeholder = '0'; rate.setAttribute('aria-label', 'Rate per kilogram'); rate.addEventListener('input', calculate); rateCell.appendChild(rate); tr.appendChild(rateCell);
+            tr.appendChild(cell('amount', '0.00')); tbody.appendChild(tr); renumber();
         }
-
-        td.textContent = content;
-        return td;
-    }
-
-    // Serial number
-    tr.appendChild(createCell("serial"));
-
-    // Vegetable name
-    const itemCell = createCell("item");
-    const itemInput = document.createElement("input");
-
-    itemInput.type = "text";
-    itemInput.value = name;
-    itemInput.placeholder = "Vegetable name";
-    itemInput.setAttribute("aria-label", "Vegetable name");
-
-    itemInput.addEventListener("input", calculate);
-
-    itemCell.appendChild(itemInput);
-    tr.appendChild(itemCell);
-
-    // Quantity
-    const qtyCell = createCell();
-    const qtyInput = document.createElement("input");
-
-    qtyInput.className = "qty";
-    qtyInput.type = "number";
-    qtyInput.min = "0";
-    qtyInput.step = "0.001";
-    qtyInput.placeholder = "0";
-    qtyInput.setAttribute("aria-label", "Quantity");
-
-    qtyInput.addEventListener("input", calculate);
-
-    qtyCell.appendChild(qtyInput);
-    tr.appendChild(qtyCell);
-
-    // Unit
-    const unitCell = createCell();
-    const unitSelect = document.createElement("select");
-
-    unitSelect.className = "unit";
-    unitSelect.setAttribute("aria-label", "Unit");
-
-    const kgOption = document.createElement("option");
-    kgOption.value = "kg";
-    kgOption.textContent = "kg";
-
-    const gOption = document.createElement("option");
-    gOption.value = "g";
-    gOption.textContent = "g";
-
-    unitSelect.appendChild(kgOption);
-    unitSelect.appendChild(gOption);
-
-    unitSelect.addEventListener("change", calculate);
-
-    unitCell.appendChild(unitSelect);
-    tr.appendChild(unitCell);
-
-    // Rate per kilogram
-    const rateCell = createCell();
-    const rateInput = document.createElement("input");
-
-    rateInput.className = "rate";
-    rateInput.type = "number";
-    rateInput.min = "0";
-    rateInput.step = "0.01";
-    rateInput.placeholder = "0";
-    rateInput.setAttribute("aria-label", "Rate per kilogram");
-
-    rateInput.addEventListener("input", calculate);
-
-    rateCell.appendChild(rateInput);
-    tr.appendChild(rateCell);
-
-    // Calculated amount
-    tr.appendChild(createCell("amount", "0.00"));
-
-    tbody.appendChild(tr);
-    renumber();
-}
-
-function renumber() {
-    [...tbody.rows].forEach((row, index) => {
-        row.querySelector(".serial").textContent = index + 1;
-    });
-
-    calculate();
-}
-
-function calculate() {
-    let total = 0;
-
-    [...tbody.rows].forEach(row => {
-        const qty =
-            parseFloat(row.querySelector(".qty").value) || 0;
-
-        const rate =
-            parseFloat(row.querySelector(".rate").value) || 0;
-
-        const unit = row.querySelector(".unit").value;
-
-        // Convert grams to kilograms.
-        const quantityInKg = unit === "g" ? qty / 1000 : qty;
-
-        const amount = quantityInKg * rate;
-
-        total += amount;
-
-        row.querySelector(".amount").textContent =
-            amount.toFixed(2);
-    });
-
-    document.getElementById("grandTotal").textContent =
-        total.toFixed(2);
-
-    document.getElementById("balance").textContent =
-        total.toFixed(2);
-}
-
-// Add a new vegetable row.
-document.getElementById("addBtn").addEventListener("click", () => {
-    addRow();
-});
-
-// Clear all vegetable rows.
-document.getElementById("clearBtn").addEventListener("click", () => {
-    tbody.innerHTML = "";
-    calculate();
-});
-
-// Print the bill or save it as a PDF.
-document.getElementById("printBtn").addEventListener("click", () => {
-    window.print();
-});
-
-// Update bill number.
-document.getElementById("billNo").addEventListener("input", event => {
-    document.getElementById("showBillNo").textContent =
-        event.target.value || "____________";
-});
-
-// Update customer details.
-document.getElementById("customer").addEventListener("input", event => {
-    document.getElementById("showCustomer").textContent =
-        event.target.value || "____________________________";
-});
-
-// Update bill date.
-document.getElementById("billDate").addEventListener("input", event => {
-    const dateValue = event.target.value;
-
-    if (!dateValue) {
-        document.getElementById("showDate").textContent =
-            "____________";
-        return;
-    }
-
-    const [year, month, day] = dateValue.split("-");
-
-    document.getElementById("showDate").textContent =
-        `${day}/${month}/${year}`;
-});
-
-// Set today's date automatically.
-const now = new Date();
-
-const yyyy = now.getFullYear();
-const mm = String(now.getMonth() + 1).padStart(2, "0");
-const dd = String(now.getDate()).padStart(2, "0");
-
-document.getElementById("billDate").value =
-    `${yyyy}-${mm}-${dd}`;
-
-document.getElementById("showDate").textContent =
-    `${dd}/${mm}/${yyyy}`;
-
-// Add all 42 vegetables automatically.
-names.forEach(name => addRow(name));
-</script>
-
+        function renumber() {[...tbody.rows].forEach((r, i) => r.querySelector('.serial').textContent = i + 1); calculate()}
+        function calculate() {let total = 0;[...tbody.rows].forEach(r => {const q = parseFloat(r.querySelector('.qty').value) || 0; const rate = parseFloat(r.querySelector('.rate').value) || 0; const unit = r.querySelector('.unit').value; const amount = (unit === 'g' ? q / 1000 : q) * rate; total += amount; r.querySelector('.amount').textContent = amount.toFixed(2)}); document.getElementById('grandTotal').textContent = total.toFixed(2); document.getElementById('balance').textContent = total.toFixed(2)}
+        document.getElementById('addBtn').addEventListener('click', () => addRow());
+        document.getElementById('clearBtn').addEventListener('click', () => {tbody.innerHTML = ''; calculate()});
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
+        document.getElementById('billNo').addEventListener('input', e => document.getElementById('showBillNo').textContent = e.target.value || '____________');
+        document.getElementById('customer').addEventListener('input', e => document.getElementById('showCustomer').textContent = e.target.value || '________________________________');
+        document.getElementById('billDate').addEventListener('input', e => {if (!e.target.value) {document.getElementById('showDate').textContent = '____________'; return } const [y, m, d] = e.target.value.split('-'); document.getElementById('showDate').textContent = `${d}/${m}/${y}`});
+        const now = new Date(), yyyy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0'); document.getElementById('billDate').value = `${yyyy}-${mm}-${dd}`; document.getElementById('showDate').textContent = `${dd}/${mm}/${yyyy}`;
+        names.forEach(n => addRow(n));
+    </script>
 </body>
+
 </html>
